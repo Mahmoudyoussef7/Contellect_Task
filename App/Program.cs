@@ -1,3 +1,4 @@
+using App.Hubs;
 using BL.Services;
 using DAL;
 using DAL.Data;
@@ -16,6 +17,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServe
 builder.Services.AddScoped<IService<Contact>, ContactService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IContactRepository, ContactRepository>();
+builder.Services.AddSignalR();
 
 builder.Services.AddControllersWithViews();
 
@@ -36,8 +38,10 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<ContactHub>("/contactHub");
+    endpoints.MapControllerRoute(name: "default",  pattern: "{controller=Home}/{action=Index}/{id?}");
+});
 
 app.Run();

@@ -42,17 +42,17 @@
                 <td>
                     @if (!string.IsNullOrEmpty(item.LockedBy) && item.LockedBy != Context.Request.Cookies["UserName"])
                     {
-                        <ul class="nav nav-pills">
-                            <li class="nav-item">
-                                <a class="nav-link disabled">Disabled</a>
-                            </li>
-                        </ul>
+                        <span id="locked-@(item.Id)">
+                            <button type="button" class="btn btn-secondary disabled">Locked</button>
+                        </span>
                     }
                     else
                     {
-                        <input type="submit" value="Save" class="btn btn-primary" id="saveBtn-@(item.Id)" data-id="@item.Id" hidden />
-                        <button type="button" class="btn btn-info mx-1 editBtn" id="editBtn-@(item.Id)" data-id="@item.Id">Edit</button>
-                        <button type="button" class="btn btn-danger mx-1 deleteBtn" id="deleteBtn-@(item.Id)" data-id="@item.Id">Delete</button>
+                        <span id="unlocked-@(item.Id)">
+                            <input type="submit" value="Save" class="btn btn-primary" id="saveBtn-@(item.Id)" data-id="@item.Id" hidden />
+                            <button type="button" class="btn btn-info mx-1 editBtn" id="editBtn-@(item.Id)" data-id="@item.Id">Edit</button>
+                            <button type="button" class="btn btn-danger mx-1 deleteBtn" id="deleteBtn-@(item.Id)" data-id="@item.Id">Delete</button>
+                        </span>
                     }
                 </td>
             </tr>
@@ -143,5 +143,29 @@
                 }
             });
         });
+    });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.6/signalr.min.js"></script>
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/contactHub")
+        .build();
+
+    connection.start().then(function () {
+        console.log("SignalR connected.");
+    }).catch(function (err) {
+        console.error(err.toString());
+    });
+
+    connection.on("ContactLocked", function (contactId) {
+        // Update the specific contact row
+
+
+        // Render the updated contact row
+        $('#locked-' + contactId).removeAttr('hidden');
+        $('#unlocked-' + contactId).attr('hidden', 'hidden');
+
+        console.log("Contact locked: " + contactId);
     });
 </script>

@@ -1,8 +1,10 @@
 ﻿using App.Custom;
+using App.Hubs;
 using BL.Services;
 using BL.ViewModels;
 using DAL.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace App.Controllers;
@@ -11,10 +13,12 @@ namespace App.Controllers;
 public class ContactController : Controller
 {
     private readonly IService<Contact> _contactService;
+    private readonly IHubContext<ContactHub> _hubContext;
 
-    public ContactController(IService<Contact> service)
+    public ContactController(IService<Contact> service, IHubContext<ContactHub> hubContext)
     {
         _contactService = service;
+        _hubContext = hubContext;
     }
     public ActionResult Index(int pageNumber = 1)
     {
@@ -94,7 +98,7 @@ public class ContactController : Controller
     }
 
     [HttpPost]
-    public IActionResult LockContact(Guid id)
+    public IActionResult LockContactAsync(Guid id)
     {
         var contact = _contactService.GetByContactId(id);
         if (contact == null)
@@ -103,6 +107,9 @@ public class ContactController : Controller
         }
         contact.LockedBy = Request.Cookies["UserName"];
         _contactService.EditContact(contact);
+
+        // Notify clients about the updated contact
+        //await _hubContext.Clients.All.SendAsync("ContactLocked", contact.Id);
 
         return Ok();
     }
