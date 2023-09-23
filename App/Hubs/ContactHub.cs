@@ -1,5 +1,4 @@
-﻿using DAL.Entities;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 
 namespace App.Hubs;
 public class ContactHub : Hub

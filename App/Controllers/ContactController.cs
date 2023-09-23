@@ -98,7 +98,7 @@ public class ContactController : Controller
     }
 
     [HttpPost]
-    public IActionResult LockContactAsync(Guid id)
+    public IActionResult LockContact(Guid id)
     {
         var contact = _contactService.GetByContactId(id);
         if (contact == null)
