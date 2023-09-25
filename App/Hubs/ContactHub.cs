@@ -7,4 +7,11 @@ public class ContactHub : Hub
     {
         await Clients.Others.SendAsync("ContactLocked", contactId);
     }
+    
+    public async Task ContactUnlocked(Guid contactId)
+    {
+        await Clients.Others.SendAsync("ContactUnlocked", contactId);
+    }
+
+    public string GetConnectionId() => Context.ConnectionId;
 }

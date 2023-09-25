@@ -67,13 +67,13 @@ public class HomeController : Controller
             SameSite = SameSiteMode.Strict,
         };
 
-        // Set the user ID and role ID in separate cookies
+        // Set the UserName cookie
         Response.Cookies.Append("UserName", username, cookieOptions);
     }
 
     private void DeleteUserCookies()
     {
-        // Remove the user cookies
+        // Remove the UserName cookie
         Response.Cookies.Delete("UserName");
     }
 }

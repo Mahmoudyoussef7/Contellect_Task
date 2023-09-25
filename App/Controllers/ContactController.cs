@@ -57,6 +57,9 @@ public class ContactController : Controller
                     return NotFound("The contact already locked");
                 }
                 _contactService.EditContact(contact, true);
+
+                // Notify clients about the updated contact
+                //_hubContext.Clients.All.SendAsync("ContactUnlocked", contact.Id);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -109,7 +112,7 @@ public class ContactController : Controller
         _contactService.EditContact(contact);
 
         // Notify clients about the updated contact
-        //await _hubContext.Clients.All.SendAsync("ContactLocked", contact.Id);
+        //_hubContext.Clients.All.SendAsync("ContactLocked", contact.Id);
 
         return Ok();
     }
